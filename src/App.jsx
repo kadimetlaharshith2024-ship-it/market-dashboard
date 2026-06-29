@@ -18,51 +18,50 @@ function App() {
 
   useEffect(() => {
 
-    const fetchDashboard = () => {
+    const fetchDashboard = async () => {
 
-      axios.get(`${import.meta.env.VITE_API_URL}/dashboard`)
-        .then((response) => {
+      try {
 
-          setDashboard(response.data);
+        console.log(
+          "Fetching from: https://market-intelligence-backend-2-bbtv.onrender.com/dashboard"
+        );
 
-          setLastUpdated(
-            new Date().toLocaleString()
-          );
+        const response = await axios.get(
+          "https://market-intelligence-backend-2-bbtv.onrender.com/dashboard"
+        );
 
-        })
-        .catch((error) => {
+        console.log(response.data);
 
-          console.error(
-            "Error fetching dashboard:",
-            error
-          );
+        setDashboard(response.data);
 
-        });
+        setLastUpdated(
+          new Date().toLocaleString()
+        );
+
+      } catch (error) {
+
+        console.error("Dashboard Error:", error);
+
+      }
 
     };
 
     fetchDashboard();
 
-    const interval =
-      setInterval(
-        fetchDashboard,
-        300000
-      );
+    const interval = setInterval(fetchDashboard, 300000);
 
-    return () => {
-
-      clearInterval(interval);
-
-    };
+    return () => clearInterval(interval);
 
   }, []);
 
   if (!dashboard) {
+
     return (
       <div className="loading">
         Loading Dashboard...
       </div>
     );
+
   }
 
   return (
